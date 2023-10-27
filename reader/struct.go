@@ -32,7 +32,6 @@ type Package struct {
 	Metadata
 	Manifest
 	Spine
-	Guide
 }
 
 type Metadata struct {
@@ -74,14 +73,4 @@ type Spine struct {
 type Itemref struct {
 	Idref string `xml:"idref,attr"`
 	*Item
-}
-
-type Guide struct {
-	Items []Reference `xml:"guide>reference"`
-}
-
-type Reference struct {
-	Href  string `xml:"href,attr"`
-	Title string `xml:"title,attr"`
-	Type  string `xml:"type,attr"`
 }

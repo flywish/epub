@@ -9,9 +9,10 @@ import (
 	"io/fs"
 	"os"
 	"path"
+	"path/filepath"
 )
 
-func OpenEpub(src string) (*EpubCloser, error) {
+func OpenEpub(src string, isMakeFile bool) (*EpubCloser, error) {
 	originFile, err := os.Open(src)
 	if err != nil {
 		return nil, err
@@ -32,7 +33,7 @@ func OpenEpub(src string) (*EpubCloser, error) {
 	epubInfo := new(EpubCloser)
 	epubInfo.f = originFile
 
-	err = epubInfo.analyze(zipSource)
+	err = epubInfo.analyze(zipSource, isMakeFile)
 	if err != nil {
 		return nil, err
 	}
@@ -40,11 +41,31 @@ func OpenEpub(src string) (*EpubCloser, error) {
 	return epubInfo, nil
 }
 
-// 分析zip
-func (ep *EpubInfo) analyze(zipSource *zip.Reader) error {
+// 分析zip, 如果需要创建本地文件，则解压缩到本地
+func (ep *EpubInfo) analyze(zipSource *zip.Reader, isMakeFile bool) error {
 	ep.files = make(map[string]*zip.File)
+
 	for _, file := range zipSource.File {
 		ep.files[file.Name] = file
+
+		// 创建本地文件
+		path := filepath.Join("./tmp/epub_source", file.Name)
+		rc, err := file.Open()
+		if err != nil {
+			return err
+		}
+		if file.FileInfo().IsDir() {
+			os.MkdirAll(path, 0777)
+		} else {
+			os.MkdirAll(filepath.Dir(path), 0777)
+			f, err := os.OpenFile(path, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, file.Mode())
+			if err != nil {
+				return err
+			}
+			_, err = io.Copy(f, rc)
+			f.Close()
+		}
+		rc.Close()
 	}
 
 	err := ep.setContainer()
