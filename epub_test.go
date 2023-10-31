@@ -16,7 +16,7 @@ func TestRead(t *testing.T) {
 		{
 			name: "case-normal",
 			args: args{
-				src:        "test_data/世界文明启示录.epub",
+				src:        "test_data/gaodengshuxue.epub",
 				isMakeFile: false,
 			},
 		},
