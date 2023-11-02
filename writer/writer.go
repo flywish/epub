@@ -1,5 +1,0 @@
-package writer
-
-func NewEpub() {
-
-}

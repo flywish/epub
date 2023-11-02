@@ -26,13 +26,13 @@ type Container struct {
 type RootFile struct {
 	FullPath string `xml:"full-path,attr"`
 	Package
+	Toc
 }
 
 type Package struct {
 	Metadata
 	Manifest
 	Spine
-	Guide
 }
 
 type Metadata struct {
@@ -76,12 +76,21 @@ type Itemref struct {
 	*Item
 }
 
-type Guide struct {
-	Items []Reference `xml:"guide>reference"`
+type Toc struct {
+	NavMap []NavPoint `xml:"navMap>navPoint"`
 }
 
-type Reference struct {
-	Href  string `xml:"href,attr"`
-	Title string `xml:"title,attr"`
-	Type  string `xml:"type,attr"`
+type NavPoint struct {
+	ID        string   `xml:"id,attr"`
+	PlayOrder int      `xml:"playOrder,attr"`
+	NavLabel  NavLabel `xml:"navLabel"`
+	Content   Content  `xml:"content"`
+}
+
+type NavLabel struct {
+	Text string `xml:"text"`
+}
+
+type Content struct {
+	Src string `xml:"src,attr"`
 }
