@@ -7,9 +7,11 @@ import (
 	"errors"
 	"io"
 	"io/fs"
+	"log"
 	"os"
 	"path"
 	"path/filepath"
+	"strings"
 )
 
 func OpenEpub(src string, isMakeFile bool) (*EpubCloser, error) {
@@ -48,24 +50,26 @@ func (ep *EpubInfo) analyze(zipSource *zip.Reader, isMakeFile bool) error {
 	for _, file := range zipSource.File {
 		ep.files[file.Name] = file
 
-		// 创建本地文件
-		path := filepath.Join("./tmp/epub_source", file.Name)
-		rc, err := file.Open()
-		if err != nil {
-			return err
-		}
-		if file.FileInfo().IsDir() {
-			os.MkdirAll(path, 0777)
-		} else {
-			os.MkdirAll(filepath.Dir(path), 0777)
-			f, err := os.OpenFile(path, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, file.Mode())
+		if isMakeFile {
+			// 创建本地文件
+			path := filepath.Join("./tmp/epub_source", file.Name)
+			rc, err := file.Open()
 			if err != nil {
 				return err
 			}
-			_, err = io.Copy(f, rc)
-			f.Close()
+			if file.FileInfo().IsDir() {
+				os.MkdirAll(path, 0777)
+			} else {
+				os.MkdirAll(filepath.Dir(path), 0777)
+				f, err := os.OpenFile(path, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, file.Mode())
+				if err != nil {
+					return err
+				}
+				_, err = io.Copy(f, rc)
+				f.Close()
+			}
+			rc.Close()
 		}
-		rc.Close()
 	}
 
 	err := ep.setContainer()
@@ -73,13 +77,19 @@ func (ep *EpubInfo) analyze(zipSource *zip.Reader, isMakeFile bool) error {
 		return err
 	}
 
-	err = ep.setPackages()
-	if err != nil {
-		return err
-	}
+	//err = ep.setPackages()
+	//if err != nil {
+	//	return err
+	//}
+	//
+	//err = ep.setItems()
+	//if err != nil {
+	//	return err
+	//}
 
-	err = ep.setItems()
+	err = ep.setToc()
 	if err != nil {
+		log.Printf("解析toc失败:%#v", err)
 		return err
 	}
 
@@ -166,6 +176,43 @@ func (ep *EpubInfo) setItems() error {
 
 	if itemrefCount < 1 {
 		return errors.New("未找到合法节点")
+	}
+	return nil
+}
+
+func (ep *EpubInfo) setToc() error {
+	for _, rootFile := range ep.Container.RootFiles {
+		if ep.files[rootFile.FullPath] == nil {
+			return errors.New("未找到full_path对应的文件")
+		}
+
+		// 找到*.ncx 文件, 一般是toc.ncx 但是不排除其他可能, 但是后缀名是固定的
+		tocFileName := ""
+		for fileName, _ := range ep.files {
+			if strings.HasSuffix(fileName, ".ncx") {
+				tocFileName = fileName
+			}
+		}
+
+		if len(tocFileName) == 0 {
+			return errors.New("未找到toc目录文件")
+		}
+
+		tocFile, err := ep.files[tocFileName].Open()
+		if err != nil {
+			return err
+		}
+
+		var buf bytes.Buffer
+		_, err = io.Copy(&buf, tocFile)
+		if err != nil {
+			return err
+		}
+
+		err = xml.Unmarshal(buf.Bytes(), &rootFile.Toc)
+		if err != nil {
+			return err
+		}
 	}
 	return nil
 }

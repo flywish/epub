@@ -1,11 +1,9 @@
 package epub
 
 import (
-	"encoding/base64"
 	"epub/creator"
 	"epub/reader"
 	"fmt"
-	"io/ioutil"
 	"log"
 )
 
@@ -19,24 +17,33 @@ func Read(src string, isMakeFile bool) {
 	defer epubInfo.CloseEpub()
 
 	book := epubInfo.EpubInfo.RootFiles[0]
-	for _, item := range book.Manifest.Items {
-		// TODO :: 可以将image,css,video,audio等资源上传到oss
-		if item.MediaType == "image/jpeg" {
-			// 处理图片
-			content, err := item.ItemOpen()
-			if err != nil {
-				println("文件打开失败")
-			}
-			b, _ := ioutil.ReadAll(content)
-			baseimg := "data:image/jpeg;base64," + base64.StdEncoding.EncodeToString(b)
-			log.Println(baseimg)
-			break
-		}
 
-		//item.ItemInfo()
-		//break
+	log.Printf("%#v", book)
 
+	for _, value := range book.Toc.NavMap {
+		//log.Printf("%#v", value)
+
+		log.Printf(value.Content.Src)
 	}
+
+	//for _, item := range book.Manifest.Items {
+	//	// TODO :: 可以将image,css,video,audio等资源上传到oss
+	//	if item.MediaType == "image/jpeg" {
+	//		// 处理图片
+	//		content, err := item.ItemOpen()
+	//		if err != nil {
+	//			println("文件打开失败")
+	//		}
+	//		b, _ := ioutil.ReadAll(content)
+	//		baseimg := "data:image/jpeg;base64," + base64.StdEncoding.EncodeToString(b)
+	//		log.Println(baseimg)
+	//		break
+	//	}
+	//
+	//	//item.ItemInfo()
+	//	//break
+	//
+	//}
 }
 
 // github 参考包的

@@ -26,6 +26,7 @@ type Container struct {
 type RootFile struct {
 	FullPath string `xml:"full-path,attr"`
 	Package
+	Toc
 }
 
 type Package struct {
@@ -73,4 +74,23 @@ type Spine struct {
 type Itemref struct {
 	Idref string `xml:"idref,attr"`
 	*Item
+}
+
+type Toc struct {
+	NavMap []NavPoint `xml:"navMap>navPoint"`
+}
+
+type NavPoint struct {
+	ID        string   `xml:"id,attr"`
+	PlayOrder int      `xml:"playOrder,attr"`
+	NavLabel  NavLabel `xml:"navLabel"`
+	Content   Content  `xml:"content"`
+}
+
+type NavLabel struct {
+	Text string `xml:"text"`
+}
+
+type Content struct {
+	Src string `xml:"src,attr"`
 }
