@@ -81,10 +81,11 @@ type Toc struct {
 }
 
 type NavPoint struct {
-	ID        string   `xml:"id,attr"`
-	PlayOrder int      `xml:"playOrder,attr"`
-	NavLabel  NavLabel `xml:"navLabel"`
-	Content   Content  `xml:"content"`
+	ID        string     `xml:"id,attr"`
+	PlayOrder int        `xml:"playOrder,attr"`
+	NavLabel  NavLabel   `xml:"navLabel"`
+	Content   Content    `xml:"content"`
+	Children  []NavPoint `xml:"navPoint"`
 }
 
 type NavLabel struct {
