@@ -29,6 +29,7 @@ func NewEpub(title string) *EpubInfo {
 	epub.media.audios = make(map[string]string)
 
 	epub.pkg = newPackage()
+	epub.toc = newToc()
 
 	return epub
 }
@@ -219,18 +220,18 @@ func (ep *EpubInfo) Assemble(outFile io.Writer) error {
 	ep.writeMimetype(epubRootTempDir)
 	ep.createEpubFolders(epubRootTempDir)
 
-	// Must be called after:
+	// 必须在以下方法之后调用
 	// createEpubFolders()
 	ep.writeContainerFile(epubRootTempDir)
 
-	// Must be called after:
+	// 必须在以下方法之后调用
 	// createEpubFolders()
 	err = ep.writeCSSFiles(epubRootTempDir)
 	if err != nil {
 		return err
 	}
 
-	// Must be called after:
+	// 必须在以下方法之后调用
 	// createEpubFolders()
 	err = ep.writeFonts(epubRootTempDir)
 	if err != nil {
@@ -238,37 +239,38 @@ func (ep *EpubInfo) Assemble(outFile io.Writer) error {
 		return err
 	}
 
-	// Must be called after:
+	// 必须在以下方法之后调用
 	// createEpubFolders()
 	err = ep.writeImages(epubRootTempDir)
 	if err != nil {
 		return err
 	}
 
-	// Must be called after:
+	// 必须在以下方法之后调用
 	// createEpubFolders()
 	err = ep.writeVideos(epubRootTempDir)
 	if err != nil {
 		return err
 	}
 
-	// Must be called after:
+	// 必须在以下方法之后调用
 	// createEpubFolders()
 	err = ep.writeAudios(epubRootTempDir)
 	if err != nil {
 		return err
 	}
 
-	// Must be called after:
+	// 必须在以下方法之后调用
 	// createEpubFolders()
 	ep.writeSections(epubRootTempDir)
 
-	// Must be called after:
+	// 必须在以下方法之后调用
 	// createEpubFolders()
 	// writeSections()
-	//ep.writeToc(epubRootTempDir)
+	// epub3 没有 toc.ncx 了, 只有nav.html
+	ep.writeNav(epubRootTempDir)
 
-	// Must be called after:
+	// 必须在以下方法之后调用
 	// createEpubFolders()
 	// writeCSSFiles()
 	// writeImages()
