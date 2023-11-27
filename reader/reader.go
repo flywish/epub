@@ -188,7 +188,7 @@ func (ep *EpubInfo) setToc() error {
 
 		// 找到*.ncx 文件, 一般是toc.ncx 但是不排除其他可能, 但是后缀名是固定的
 		tocFileName := ""
-		for fileName, _ := range ep.files {
+		for fileName := range ep.files {
 			if strings.HasSuffix(fileName, ".ncx") {
 				tocFileName = fileName
 			}

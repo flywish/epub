@@ -4,7 +4,6 @@ import (
 	"archive/zip"
 	"errors"
 	"fmt"
-	"github.com/google/uuid"
 	"io"
 	"io/fs"
 	"log"
@@ -12,6 +11,8 @@ import (
 	"path"
 	"path/filepath"
 	"time"
+
+	"github.com/google/uuid"
 )
 
 // NewEpub 创建一个epub对象, 并设置默认的信息
