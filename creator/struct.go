@@ -11,6 +11,8 @@ type EpubInfo struct {
 	media
 	sections []section
 	pkg      *pkg
+	// Table of contents
+	toc *toc
 }
 
 // 元数据

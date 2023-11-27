@@ -20,6 +20,13 @@ func TestRead(t *testing.T) {
 				isMakeFile: true,
 			},
 		},
+		{
+			name: "case-normal",
+			args: args{
+				src:        "test_data/gaodengshuxue.epub",
+				isMakeFile: true,
+			},
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

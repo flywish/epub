@@ -3,7 +3,6 @@ package creator
 import (
 	"errors"
 	"fmt"
-	"github.com/gabriel-vasile/mimetype"
 	"io"
 	"io/fs"
 	"log"
@@ -13,6 +12,8 @@ import (
 	"strings"
 	"unicode"
 	"unicode/utf8"
+
+	"github.com/gabriel-vasile/mimetype"
 )
 
 // addMedia 添加媒体资源
@@ -344,14 +345,14 @@ func (ep *EpubInfo) writeSections(rootEpubDir string) {
 
 			// Don't add pages without titles or the cover to the TOC
 			if section.xhtml.Title() != "" {
-				//ep.toc.addSection(index, section.xhtml.Title(), relativePath)
+				ep.toc.addSection(index, section.xhtml.Title(), relativePath)
 
 				// Add subsections
 				if section.children != nil {
 					for _, child := range *section.children {
 						index += 1
 						relativeSubPath := filepath.Join(textFolderName, child.filename)
-						//ep.toc.addSubSection(relativePath, index, child.xhtml.Title(), relativeSubPath)
+						ep.toc.addSubSection(relativePath, index, child.xhtml.Title(), relativeSubPath)
 
 						subSectionFilePath := filepath.Join(rootEpubDir, contentFolderName, textFolderName, child.filename)
 						child.xhtml.write(subSectionFilePath)
@@ -366,6 +367,13 @@ func (ep *EpubInfo) writeSections(rootEpubDir string) {
 			index += 1
 		}
 	}
+}
+
+func (ep *EpubInfo) writeNav(rootEpubDir string) {
+	ep.pkg.addToManifest(tocNavItemID, filepath.Join(textFolderName, tocNavFilename), mediaTypeXhtml, tocNavItemProperties)
+	// ep.pkg.addToManifest(tocNcxItemID, tocNcxFilename, mediaTypeNcx, "")
+
+	ep.toc.write(rootEpubDir)
 }
 
 // 写入

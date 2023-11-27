@@ -21,9 +21,7 @@ func Read(src string, isMakeFile bool) {
 	log.Printf("%#v", book)
 
 	for _, value := range book.Toc.NavMap {
-		//log.Printf("%#v", value)
-
-		log.Printf(value.Content.Src)
+		log.Printf("%#v", value)
 	}
 
 	//for _, item := range book.Manifest.Items {
@@ -47,16 +45,16 @@ func Read(src string, isMakeFile bool) {
 }
 
 // github 参考包的
-//func WriteDemo() {
-//	// 参考的包的效果
-//	ep := epub.NewEpub("参考测试")
-//	ep.SetAuthor("victor")
-//
-//	ep.AddCSS("tmp/epub_source/OEBPS/Styles/sgc-toc.css", "sgc-toc.css")
-//
-//	ep.AddImage("tmp/epub_source/OEBPS/Images/cover.jpg", "cover.jpg")
-//
-//	ep.AddSection(`<h1 class="kindle-cn-copyright-title">版权信息</h1>
+// func WriteDemo() {
+// 	// 参考的包的效果
+// 	ep := epub.NewEpub("参考测试")
+// 	ep.SetAuthor("victor")
+
+// 	ep.AddCSS("tmp/epub_source/OEBPS/Styles/sgc-toc.css", "sgc-toc.css")
+
+// 	ep.AddImage("tmp/epub_source/OEBPS/Images/cover.jpg", "cover.jpg")
+
+// 	ep.AddSection(`<h1 class="kindle-cn-copyright-title">版权信息</h1>
 //  <p class="kindle-cn-copyright-text">世界文明启示录/（德）伊瓦尔·里斯纳著；吴奕俊，鲍京秀译.——天津：天津人民出版社，2020.7</p>
 //  <p class="kindle-cn-copyright-text">ISBN 978-7-201-15984-3</p>
 //  <p class="kindle-cn-copyright-text">Ⅰ.①世…　Ⅱ.①伊……②吴……③鲍…　Ⅲ.①文化史-世界-通俗读物Ⅳ.①K103-49</p>
@@ -84,12 +82,11 @@ func Read(src string, isMakeFile bool) {
 //  <p class="kindle-cn-copyright-text">定　　价　78.00元</p>
 //  <p class="kindle-cn-copyright-text">版权所有，侵权必究</p>
 //  <p class="kindle-cn-copyright-text">图书如出现印装质量问题，请致电联系调换（022-23332469）</p>`, "第一章 测试", "section_1.xhtml", "")
-//
-//	ep.Write("参考的.epub")
-//}
+
+// 	ep.Write("参考的.epub")
+// }
 
 func Write() {
-
 	// 我自己的
 	epub := creator.NewEpub("测试生成")
 	epub.SetCreator("魏旭晖")

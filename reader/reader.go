@@ -77,15 +77,15 @@ func (ep *EpubInfo) analyze(zipSource *zip.Reader, isMakeFile bool) error {
 		return err
 	}
 
-	//err = ep.setPackages()
-	//if err != nil {
-	//	return err
-	//}
-	//
-	//err = ep.setItems()
-	//if err != nil {
-	//	return err
-	//}
+	err = ep.setPackages()
+	if err != nil {
+		return err
+	}
+
+	err = ep.setItems()
+	if err != nil {
+		return err
+	}
 
 	err = ep.setToc()
 	if err != nil {
